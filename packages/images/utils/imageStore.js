@@ -35,18 +35,20 @@ const imageStore = (manifest, plugin) => {
         if (file.format === 'jpeg') picture += sources.jpeg.reduce((out, cv) => `${out}${cv}`, '');
         if (file.format === 'png') picture += sources.png.reduce((out, cv) => `${out}${cv}`, '');
 
-        picture += `<img src="${file.placeholder}"${alt.length > 0 ? ` alt="${alt}"` : ''} class="lazy blur-up">`;
+        const fallbackImage = file.sizes.find((fileObj) => fileObj.format === 'png');
+
+        // picture += `<img src="${file.placeholder}"${alt.length > 0 ? ` alt="${alt}"` : ''} class="lazy blur-up">`;
+
+        picture += `<img src="${fallbackImage.relative}"${alt.length > 0 ? ` alt="${alt}"` : ''} width="${fallbackImage.width}" height="${fallbackImage.height}">`;
 
         picture += `</picture>`;
 
-        let pictureWithWrap = `<div class="ejs" ${
-          plugin.addStyles ? `style="padding-bottom: ${Math.round((file.height / file.width) * 10000) / 100}%;"` : ''
-        }>`;
+        let pictureWithWrap = `<div class="ejs" ${plugin.addStyles ? `style="padding-bottom: ${Math.round((file.height / file.width) * 10000) / 100}%;"` : ''
+          }>`;
 
         if (plugin.config.placeholder) {
-          pictureWithWrap += `<div class="placeholder" style="background-image: url('${
-            plugin.config.svg ? file.svg : file.placeholder
-          }')"></div>`;
+          pictureWithWrap += `<div class="placeholder" style="background-image: url('${plugin.config.svg ? file.svg : file.placeholder
+            }')"></div>`;
         }
 
         // if (plugin.config.svg && file.svg) {
